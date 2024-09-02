@@ -42,16 +42,9 @@ jobs:
        nothing-to-match: ${{ steps.results.outputs.nothing-to-match_any_changed }}
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.base.sha }}
-
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
 
       - uses: tj-actions/changed-files@v45
         with:
-          skip_initial_fetch: 'true'
           files_yaml_from_source_file: '.github/configurations/files-changed.yaml'
         id: results
 
