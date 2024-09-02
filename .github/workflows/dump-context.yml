@@ -51,7 +51,6 @@ jobs:
 
       - uses: tj-actions/changed-files@v45
         with:
-          base_sha: ${{ github.event.pull_request.base.sha }}
           skip_initial_fetch: 'true'
           files_yaml_from_source_file: '.github/configurations/files-changed.yaml'
         id: results
