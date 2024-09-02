@@ -33,7 +33,7 @@ jobs:
 
   changes:
     needs: []
-    if: ${{ contains(fromJSON('["merge_group", "pull_request"]'), github.event_name) }}
+    # if: ${{ contains(fromJSON('["merge_group", "pull_request"]'), github.event_name) }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     outputs:
