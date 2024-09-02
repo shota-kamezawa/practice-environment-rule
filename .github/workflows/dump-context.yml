@@ -46,7 +46,7 @@ jobs:
       - uses: tj-actions/changed-files@v45
         with:
           files_yaml_from_source_file: '.github/configurations/files-changed.yaml'
-          include_all_old_new_renamed_files: 'true'
+          output_renamed_files_as_deleted_and_added: 'true'
         id: results
 
   lint:
