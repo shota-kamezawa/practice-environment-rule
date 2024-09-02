@@ -1,9 +1,17 @@
-get-n:
-  - 'src/utils/getN*.ts'
+common: |
+  *
 
-not-get-n:
-  - '**/*.ts'
-  - '!src/utils/getN*.ts'
+get-n: |
+  src/utils/getN*.ts
 
-nothing-to-match:
-  - 'src/components/**'
+not-get-n: |
+  **/*.ts
+  !src/utils/getN*.ts
+
+not-get-n-but-number: |
+  **/*.ts
+  !src/utils/getN*.ts
+  **Number*
+
+nothing-to-match: |
+  src/components/**
