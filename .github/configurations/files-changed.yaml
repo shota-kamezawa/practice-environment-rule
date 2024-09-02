@@ -18,5 +18,9 @@ not-get-but-string: |
   !**get*
   **String*
 
+not-get: |
+  **/*.ts
+  !**get*
+
 nothing-to-match: |
   src/components/**
