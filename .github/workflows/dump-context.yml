@@ -34,8 +34,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     outputs:
-       get-n-any-changed: ${{ steps.results.outputs.get-n_any_changed }}
-       not-get-n-any-changed: ${{ steps.results.outputs.not-get-n_any_changed }}
+       get-n: ${{ steps.results.outputs.get-n_any_changed }}
+       not-get-n: ${{ steps.results.outputs.not-get-n_any_changed }}
        nothing-to-match: ${{ steps.results.outputs.nothing-to-match_any_changed }}
     steps:
       - uses: actions/checkout@v4
@@ -53,8 +53,8 @@ jobs:
           files_yaml_from_source_file: '.github/configurations/files-changed.yaml'
         id: results
 
-      - run: echo "${{ steps.results.outputs.get-n_any_changed }}"
-
-      - run: echo "${{ steps.results.outputs.not-get-n_any_changed }}"
-
-      - run: echo "${{ steps.results.outputs.nothing-to-match_any_changed }}"
+      - name: Results of files changed
+        run: |
+          echo "${{ steps.results.outputs.get-n_any_changed }}"
+          echo "${{ steps.results.outputs.not-get-n_any_changed }}"
+          echo "${{ steps.results.outputs.nothing-to-match_any_changed }}"

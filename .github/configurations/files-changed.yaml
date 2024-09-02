@@ -2,6 +2,7 @@ get-n:
   - 'src/utils/getN*.ts'
 
 not-get-n:
+  - '**/*.ts'
   - '!src/utils/getN*.ts'
 
 nothing-to-match:
