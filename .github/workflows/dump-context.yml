@@ -28,12 +28,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: 'echo github context'
+      - name: 'Dump github context'
         run: echo '${{ toJSON(github) }}'
 
   changes:
     needs: []
-    # if: ${{ contains(fromJSON('["merge_group", "pull_request"]'), github.event_name) }}
+    if: ${{ contains(fromJSON('["merge_group", "pull_request"]'), github.event_name) }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     outputs:
@@ -41,8 +41,6 @@ jobs:
        not-get-n: ${{ steps.results.outputs.not-get-n_any_changed }}
        nothing-to-match: ${{ steps.results.outputs.nothing-to-match_any_changed }}
     steps:
-      - uses: actions/checkout@v4
-
       - uses: tj-actions/changed-files@v45
         with:
           files_yaml_from_source_file: '.github/configurations/files-changed.yaml'
@@ -63,7 +61,7 @@ jobs:
     steps:
       - run: exit 0
 
-  lint-nothing-to-match:
+  lint-skipped:
     needs:
       - changes
       - dump
@@ -85,9 +83,9 @@ jobs:
   lint-status:
     needs:
       - lint
-      - lint-nothing-to-match
+      - lint-skipped
       - lint-always-fail
-    if: ${{ failure() && github.event_name == 'merge_group' }}
+    if: ${{ failure() }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
