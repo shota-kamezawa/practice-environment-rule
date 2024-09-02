@@ -85,6 +85,7 @@ jobs:
   lint-always-skipped:
     needs:
       - lint-always-fail
+    if: ${{ always() }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
