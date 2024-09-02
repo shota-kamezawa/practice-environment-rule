@@ -5,6 +5,11 @@ concurrency:
   cancel-in-progress: true
 
 on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
   push:
     branches:
       - main
@@ -20,13 +25,5 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - run: echo '${{ toJSON(github) }}'
-
-  deploy:
-    needs:
-      - dump
-    environment: production
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    steps:
-      - run: echo '${{ toJSON(github) }}'
+      - name: 'echo github context'
+        run: echo '${{ toJSON(github) }}'
