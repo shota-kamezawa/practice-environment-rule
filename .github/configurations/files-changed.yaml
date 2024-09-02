@@ -10,12 +10,12 @@ not-get-n: |
 
 number: |
   **/*.ts
-  !**get*
+  !**/*get*
   **/*Number*
 
 string: |
   **/*.ts
-  !**get*
+  !**/*get*
   **/*String*
 
 not-get: |
