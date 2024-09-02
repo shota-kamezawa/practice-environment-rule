@@ -52,3 +52,9 @@ jobs:
           skip_initial_fetch: 'true'
           files_yaml_from_source_file: '.github/configurations/files-changed.yaml'
         id: results
+
+      - run: echo "${{ steps.results.outputs.get-n_any_changed }}"
+
+      - run: echo "${{ steps.results.outputs.not-get-n_any_changed }}"
+
+      - run: echo "${{ steps.results.outputs.nothing-to-match_any_changed }}"
