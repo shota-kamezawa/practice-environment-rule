@@ -1,0 +1,8 @@
+get-n:
+  - 'src/utils/getN*.ts'
+
+not-get-n:
+  - '!src/utils/getN*.ts'
+
+nothing-to-match:
+  - 'src/components/**'

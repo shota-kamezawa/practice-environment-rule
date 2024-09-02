@@ -28,11 +28,15 @@ jobs:
       - name: 'echo github context'
         run: echo '${{ toJSON(github) }}'
 
-  changes:
+  files-changed:
     needs: []
     if: ${{ github.event_name == 'pull_request' }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    outputs:
+       get-n-any-changed: ${{ steps.results.outputs.get-n_any_changed }}
+       not-get-n-any-changed: ${{ steps.results.outputs.not-get-n_any_changed }}
+       nothing-to-match: ${{ steps.results.outputs.nothing-to-match_any_changed }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -42,38 +46,9 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha }}
 
-      - name: Files changed for 'get-n'
-        id: get-n
-        uses: tj-actions/glob@v22
+      - uses: tj-actions/changed-files@v45
         with:
-          base-sha: ${{ github.event.pull_request.base.sha }}
-          files: |
-            src/utils/getN*.ts
-
-      - name: Files changed for 'not-get-n'
-        id: not-get-n
-        uses: tj-actions/glob@v22
-        with:
-          base-sha: ${{ github.event.pull_request.base.sha }}
-          files: |
-            !src/utils/getN*.ts
-
-      - name: Files changed for 'nothing-to-match'
-        id: nothing-to-match
-        uses: tj-actions/glob@v22
-        with:
-          base-sha: ${{ github.event.pull_request.base.sha }}
-          files: |
-            src/components/**
-
-      - run: echo "${CHANGED_PATHS}"
-        env:
-          CHANGED_PATHS: ${{ steps.get-n.outputs.paths }}
-
-      - run: echo "${CHANGED_PATHS}"
-        env:
-          CHANGED_PATHS: ${{ steps.not-get-n.outputs.paths }}
-
-      - run: echo "${CHANGED_PATHS}"
-        env:
-          CHANGED_PATHS: ${{ steps.nothing-to-match.outputs.paths }}
+          base_sha: ${{ github.event.pull_request.base.sha }}
+          skip_initial_fetch: 'true'
+          files_yaml_from_source_file: '.github/configurations/files-changed.yaml'
+        id: results
