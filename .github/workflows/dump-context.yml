@@ -5,6 +5,9 @@ concurrency:
   cancel-in-progress: true
 
 on:
+  merge_group:
+    types:
+      - checks_requested
   pull_request:
     types:
       - opened
@@ -28,9 +31,9 @@ jobs:
       - name: 'echo github context'
         run: echo '${{ toJSON(github) }}'
 
-  files-changed:
+  changes:
     needs: []
-    if: ${{ github.event_name == 'pull_request' }}
+    if: ${{ contains(fromJSON('["merge_group", "pull_request"]'), github.event_name) }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     outputs:
@@ -58,3 +61,32 @@ jobs:
           echo "${{ steps.results.outputs.get-n_any_changed }}"
           echo "${{ steps.results.outputs.not-get-n_any_changed }}"
           echo "${{ steps.results.outputs.nothing-to-match_any_changed }}"
+
+  lint:
+    needs:
+      - changes
+      - dump
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - run: exit 0
+
+  lint-nothing-to-match:
+    needs:
+      - changes
+      - dump
+    if: ${{ needs.changes.outputs.nothing-to-match == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - run: exit 0
+
+
+  lint-status:
+    needs:
+      - lint
+      - lint-nothing-to-match
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - run: exit 0
