@@ -81,11 +81,20 @@ jobs:
     steps:
       - run: exit 0
 
+  lint-always-fail:
+    needs:
+      - changes
+      - dump
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - run: exit 1
 
   lint-status:
     needs:
       - lint
       - lint-nothing-to-match
+      - lint-always-fail
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
