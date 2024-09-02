@@ -95,7 +95,7 @@ jobs:
       - lint
       - lint-nothing-to-match
       - lint-always-fail
-    if: ${{ failure() }}
+    if: ${{ failure() && github.event_name == 'merge_group' }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
