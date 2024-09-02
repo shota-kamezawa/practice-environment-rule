@@ -61,7 +61,7 @@ jobs:
     steps:
       - run: exit 0
 
-  lint-skipped:
+  lint-maybe:
     needs:
       - changes
       - dump
@@ -80,11 +80,19 @@ jobs:
     steps:
       - run: exit 1
 
+  lint-always-skipped:
+    needs:
+      - lint-always-fail
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - run: exit 0
+
   lint-status:
     needs:
       - lint
-      - lint-skipped
-      - lint-always-fail
+      - lint-maybe
+      - lint-always-skipped
     if: ${{ failure() }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
