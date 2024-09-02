@@ -95,8 +95,8 @@ jobs:
       - lint
       - lint-nothing-to-match
       - lint-always-fail
-    if: ${{ !cancelled() && !failure() }}
+    if: ${{ cancelled() || failure() }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - run: exit 0
+      - run: exit 1
