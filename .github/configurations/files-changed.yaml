@@ -1,6 +1,12 @@
 common: |
   *
 
+utils-number: |
+  src/utils/getNumber.ts
+
+shared-number: |
+  src/shared/getNumber.ts
+
 get-n: |
   src/utils/getN*.ts
 
