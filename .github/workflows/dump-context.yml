@@ -41,6 +41,8 @@ jobs:
        not-get-n: ${{ steps.results.outputs.not-get-n_any_changed }}
        nothing-to-match: ${{ steps.results.outputs.nothing-to-match_any_changed }}
     steps:
+      - uses: actions/checkout@v4
+
       - uses: tj-actions/changed-files@v45
         with:
           files_yaml_from_source_file: '.github/configurations/files-changed.yaml'
