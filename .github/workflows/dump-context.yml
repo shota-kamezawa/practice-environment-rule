@@ -65,3 +65,15 @@ jobs:
           base-sha: ${{ github.event.pull_request.base.sha }}
           files: |
             src/components/**
+
+      - run: echo "${CHANGED_PATHS}"
+        env:
+          CHANGED_PATHS: ${{ steps.get-n.outputs.paths }}
+
+      - run: echo "${CHANGED_PATHS}"
+        env:
+          CHANGED_PATHS: ${{ steps.not-get-n.outputs.paths }}
+
+      - run: echo "${CHANGED_PATHS}"
+        env:
+          CHANGED_PATHS: ${{ steps.nothing-to-match.outputs.paths }}
