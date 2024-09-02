@@ -8,10 +8,15 @@ not-get-n: |
   **/*.ts
   !src/utils/getN*.ts
 
-not-get-n-but-number: |
+not-get-but-number: |
   **/*.ts
-  !src/utils/getN*.ts
+  !**get*
   **Number*
+
+not-get-but-string: |
+  **/*.ts
+  !**get*
+  **String*
 
 nothing-to-match: |
   src/components/**
