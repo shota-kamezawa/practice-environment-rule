@@ -27,3 +27,41 @@ jobs:
     steps:
       - name: 'echo github context'
         run: echo '${{ toJSON(github) }}'
+
+  changes:
+    needs: []
+    if: ${{ github.event_name == 'pull_request' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Files changed for 'get-n'
+        id: get-n
+        uses: tj-actions/glob@v22
+        with:
+          base-sha: ${{ github.event.pull_request.base.sha }}
+          files: |
+            src/utils/getN*.ts
+
+      - name: Files changed for 'not-get-n'
+        id: not-get-n
+        uses: tj-actions/glob@v22
+        with:
+          base-sha: ${{ github.event.pull_request.base.sha }}
+          files: |
+            !src/utils/getN*.ts
+
+      - name: Files changed for 'nothing-to-match'
+        id: nothing-to-match
+        uses: tj-actions/glob@v22
+        with:
+          base-sha: ${{ github.event.pull_request.base.sha }}
+          files: |
+            src/components/**
