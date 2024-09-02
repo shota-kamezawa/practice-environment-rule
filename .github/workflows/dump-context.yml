@@ -46,13 +46,8 @@ jobs:
       - uses: tj-actions/changed-files@v45
         with:
           files_yaml_from_source_file: '.github/configurations/files-changed.yaml'
+          include_all_old_new_renamed_files: 'true'
         id: results
-
-      - name: Results of files changed
-        run: |
-          echo "${{ steps.results.outputs.get-n_any_changed }}"
-          echo "${{ steps.results.outputs.not-get-n_any_changed }}"
-          echo "${{ steps.results.outputs.nothing-to-match_any_changed }}"
 
   lint:
     needs:
