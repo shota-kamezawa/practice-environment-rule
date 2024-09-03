@@ -31,6 +31,27 @@ jobs:
       - name: 'Dump github context'
         run: echo '${{ toJSON(github) }}'
 
+  values:
+    needs: []
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - run: echo '${{ toJSON(github.event_name == 'pull_request') }}'
+
+      - run: echo '${{ toJSON(github.event_name != 'pull_request') }}'
+
+      - run: echo '${BOOLEAN_VALUE}'
+        env:
+          BOOLEAN_VALUE: ${{ toJSON(github.event_name == 'pull_request') }}
+
+      - run: echo '${BOOLEAN_VALUE}'
+        env:
+          BOOLEAN_VALUE: ${{ toJSON(github.event_name != 'pull_request') }}
+
+      - run: echo '${BOOLEAN_VALUE}'
+        env:
+          BOOLEAN_VALUE: "${{ github.event_name == 'pull_request' && 'true' || 'false' }}"
+
   changes:
     needs: []
     if: ${{ contains(fromJSON('["merge_group", "pull_request"]'), github.event_name) }}
