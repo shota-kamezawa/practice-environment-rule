@@ -1,0 +1,32 @@
+common: |
+  *
+
+utils-number: |
+  src/utils/getNumber.ts
+
+shared-number: |
+  src/shared/getNumber.ts
+
+get-n: |
+  src/utils/getN*.ts
+
+not-get-n: |
+  **/*.ts
+  !src/utils/getN*.ts
+
+number: |
+  **/*.ts
+  !**/*get*
+  **/*Number*
+
+string: |
+  **/*.ts
+  !**/*get*
+  **/*String*
+
+not-get: |
+  **/*.ts
+  !**/*get*
+
+nothing-to-match: |
+  src/components/**

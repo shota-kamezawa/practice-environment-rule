@@ -5,6 +5,9 @@ concurrency:
   cancel-in-progress: true
 
 on:
+  merge_group:
+    types:
+      - checks_requested
   pull_request:
     types:
       - opened
@@ -25,5 +28,115 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: 'echo github context'
+      - name: 'Dump github context'
         run: echo '${{ toJSON(github) }}'
+
+  values:
+    needs: []
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - run: echo "${{ github.event_name == 'pull_request' }}"
+
+      - run: echo "${{ github.event_name != 'pull_request' }}"
+
+      - run: echo "${{ toJSON(github.event_name == 'pull_request') }}"
+
+      - run: echo "${{ toJSON(github.event_name != 'pull_request') }}"
+
+      - run: echo "${BOOLEAN_VALUE}"
+        env:
+          BOOLEAN_VALUE: ${{ toJSON(github.event_name == 'pull_request') }}
+
+      - run: echo "${BOOLEAN_VALUE}"
+        env:
+          BOOLEAN_VALUE: ${{ toJSON(github.event_name != 'pull_request') }}
+
+      - run: echo "${BOOLEAN_VALUE}"
+        env:
+          BOOLEAN_VALUE: "${{ github.event_name == 'pull_request' && 'true' || 'false' }}"
+
+  changes:
+    needs: []
+    if: ${{ contains(fromJSON('["merge_group", "pull_request"]'), github.event_name) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+       get-n: ${{ steps.results.outputs.get-n_any_changed }}
+       not-get-n: ${{ steps.results.outputs.not-get-n_any_changed }}
+       nothing-to-match: ${{ steps.results.outputs.nothing-to-match_any_changed }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: tj-actions/changed-files@v45
+        with:
+          files_yaml_from_source_file: '.github/configurations/files-changed.yaml'
+          output_renamed_files_as_deleted_and_added: 'true'
+        id: results
+
+  env-concat:
+    needs: []
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - if: ${{ true }}
+        run: echo "ESLINT_OPTIONS=$ESLINT_OPTIONS --ignore-pattern 'dir1/true'" >> $GITHUB_ENV
+
+      - if: ${{ false }}
+        run: echo "ESLINT_OPTIONS=$ESLINT_OPTIONS --ignore-pattern 'dir2/false'" >> $GITHUB_ENV
+
+      - if: ${{ true }}
+        run: echo "ESLINT_OPTIONS=$ESLINT_OPTIONS --ignore-pattern 'dir3/true'" >> $GITHUB_ENV
+
+      - if: ${{ false }}
+        run: echo "ESLINT_OPTIONS=$ESLINT_OPTIONS --ignore-pattern 'dir2/false'" >> $GITHUB_ENV
+
+      - run: echo "$ESLINT_OPTIONS"
+
+  lint:
+    needs:
+      - changes
+      - dump
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - run: exit 0
+
+  lint-maybe:
+    needs:
+      - changes
+      - dump
+    if: ${{ needs.changes.outputs.nothing-to-match == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - run: exit 0
+
+  lint-always-fail:
+    needs:
+      - changes
+      - dump
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - run: exit 1
+
+  lint-always-skipped:
+    needs:
+      - lint-always-fail
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - run: exit 0
+
+  lint-status:
+    needs:
+      - lint
+      - lint-maybe
+      - lint-always-skipped
+    if: ${{ failure() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - run: exit 1
