@@ -74,6 +74,25 @@ jobs:
           output_renamed_files_as_deleted_and_added: 'true'
         id: results
 
+  env-concat:
+    needs: []
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - if: ${{ true }}
+        run: echo "ESLINT_OPTIONS=$ESLINT_OPTIONS --ignore-pattern 'dir1/true'" >> $GITHUB_ENV
+
+      - if: ${{ false }}
+        run: echo "ESLINT_OPTIONS=$ESLINT_OPTIONS --ignore-pattern 'dir2/false'" >> $GITHUB_ENV
+
+      - if: ${{ true }}
+        run: echo "ESLINT_OPTIONS=$ESLINT_OPTIONS --ignore-pattern 'dir3/true'" >> $GITHUB_ENV
+
+      - if: ${{ false }}
+        run: echo "ESLINT_OPTIONS=$ESLINT_OPTIONS --ignore-pattern 'dir2/false'" >> $GITHUB_ENV
+
+      - run: echo "$ESLINT_OPTIONS"
+
   lint:
     needs:
       - changes
